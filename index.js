@@ -7,7 +7,8 @@ const {
   removeNote,
   editNote,
 } = require("./notes.controller");
-const port = 3000;
+// const port = 3000;
+const port = process.env.PORT || 3000; // для старта сервера
 const app = express();
 
 app.set("view engine", "ejs");
