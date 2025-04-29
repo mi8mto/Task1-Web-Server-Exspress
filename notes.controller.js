@@ -1,63 +1,29 @@
-const fs = require("fs/promises");
-const path = require("path");
 const chalk = require("chalk");
-
-const notesPath = path.join(__dirname, "db.json");
+const Note = require("./models/Note");
 
 async function addNote(title) {
-  const notes = await getNotes();
-  const note = {
-    title,
-    id: Date.now().toString(),
-  };
-
-  notes.push(note);
-
-  await saveNotes(notes);
+  await Note.create({ title });
   console.log(chalk.bgGreen("Note was added!"));
 }
 
 async function getNotes() {
-  const notes = await fs.readFile(notesPath, { encoding: "utf-8" });
-  return Array.isArray(JSON.parse(notes)) ? JSON.parse(notes) : [];
-}
-
-async function saveNotes(notes) {
-  await fs.writeFile(notesPath, JSON.stringify(notes));
-}
-
-async function printNotes() {
-  const notes = await getNotes();
-
-  console.log(chalk.bgBlue("Here is the list of notes:"));
-  notes.forEach((note) => {
-    console.log(chalk.bgWhite(note.id), chalk.blue(note.title));
-  });
+  const notes = await Note.find();
+  return notes;
 }
 
 async function removeNote(id) {
-  const notes = await getNotes();
-  const filtered = notes.filter((note) => note.id !== id);
-  await saveNotes(filtered);
+  await Note.deleteOne({ _id: id });
   console.log(chalk.red(`Note with id="${id}" has been removed.`));
 }
 
-async function editNote(id, newTitle) {
-  const notes = await getNotes();
-  const updated = notes.map((note) => {
-    if (note.id === id) {
-      return { ...note, title: newTitle };
-    }
-    return note;
-  });
-  await saveNotes(updated);
-  console.log(chalk.blue(`Note with id="${id}" has been updated.`));
+async function updateNote(noteData) {
+  await Note.updateOne({ _id: noteData.id }, { title: noteData.title });
+  console.log(chalk.blue(`Note with id="${noteData.id}" has been updated.`));
 }
 
 module.exports = {
   addNote,
-  printNotes,
-  removeNote,
   getNotes,
-  editNote,
+  removeNote,
+  updateNote,
 };
