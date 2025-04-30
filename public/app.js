@@ -6,16 +6,36 @@ document.addEventListener("click", (event) => {
     });
   }
 
+  //   if (event.target.dataset.type === "edit") {
+  //     const id = event.target.dataset.id;
+  //     const currentTitle = event.target
+  //       .closest("li")
+  //       .firstChild.textContent.trim();
+  //     const newTitle = prompt("Введите новое название", currentTitle);
+
+  //     if (newTitle) {
+  //       edit(id, newTitle).then(() => {
+  //         event.target.closest("li").firstChild.textContent = newTitle;
+  //       });
+  //     }
+  //   }
+  // });
+
   if (event.target.dataset.type === "edit") {
-    const id = event.target.dataset.id;
-    const currentTitle = event.target
-      .closest("li")
-      .firstChild.textContent.trim();
+    const button = event.target;
+    const id = button.dataset.id;
+    const li = button.closest("li");
+
+    const titleSpan = li.querySelector(".note-title");
+    const currentTitle = titleSpan.textContent.trim();
+
     const newTitle = prompt("Введите новое название", currentTitle);
 
-    if (newTitle) {
+    if (newTitle && newTitle !== currentTitle) {
       edit(id, newTitle).then(() => {
-        event.target.closest("li").firstChild.textContent = newTitle;
+        titleSpan.textContent = newTitle;
+        // обновим data-title, если используешь
+        button.dataset.title = newTitle;
       });
     }
   }
