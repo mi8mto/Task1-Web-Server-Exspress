@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const chalk = require("chalk");
 const path = require("path");
@@ -156,10 +158,8 @@ app.put("/:id", async (req, res) => {
   }
 });
 
-mongoose
-  .connect("mongodb://user:mongopass@localhost:27017/testdb?authSource=admin")
-  .then(() => {
-    app.listen(port, () => {
-      console.log(chalk.green(`Server has been started on port ${port} ...`));
-    });
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING).then(() => {
+  app.listen(port, () => {
+    console.log(chalk.green(`Server has been started on port ${port} ...`));
   });
+});
